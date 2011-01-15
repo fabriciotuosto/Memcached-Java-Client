@@ -16,21 +16,13 @@
  * @author Kevin Burton
  * @author greg whalin <greg@meetup.com> 
  */
-package com.meetup.memcached.test;
+package com.meetup.memcached;
 
 import com.meetup.memcached.*;
 import java.util.*;
 import java.io.Serializable;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.BasicConfigurator;
-
 public class UnitTests {
-	
-	// logger
-	private static Logger log =
-		Logger.getLogger( UnitTests.class.getName() );
 
     public static MemcachedClient mc  = null;
 
@@ -38,14 +30,12 @@ public class UnitTests {
         mc.set( "foo", Boolean.TRUE );
         Boolean b = (Boolean)mc.get( "foo" );
 		assert b.booleanValue();
-		log.error( "+ store/retrieve Boolean type test passed" );
     }
 
     public static void test2() {
         mc.set( "foo", new Integer( Integer.MAX_VALUE ) );
         Integer i = (Integer)mc.get( "foo" );
         assert i.intValue() == Integer.MAX_VALUE;
-		log.error( "+ store/retrieve Integer type test passed" );
     }
 
     public static void test3() {
@@ -53,63 +43,54 @@ public class UnitTests {
         mc.set( "foo", input );
         String s = (String)mc.get( "foo" );
 		assert s.equals( input );
-		log.error( "+ store/retrieve String type test passed" );
     }
     
     public static void test4() {
         mc.set( "foo", new Character( 'z' ) );
         Character c = (Character)mc.get( "foo" );
 		assert c.charValue() == 'z';
-		log.error( "+ store/retrieve Character type test passed" );
     }
 
     public static void test5() {
         mc.set( "foo", new Byte( (byte)127 ) );
         Byte b = (Byte)mc.get( "foo" );
 		assert b.byteValue() == 127;
-		log.error( "+ store/retrieve Byte type test passed" );
     }
 
     public static void test6() {
         mc.set( "foo", new StringBuffer( "hello" ) );
         StringBuffer o = (StringBuffer)mc.get( "foo" );
 		assert o.toString().equals( "hello" );
-		log.error( "+ store/retrieve StringBuffer type test passed" );
     }
 
     public static void test7() {
         mc.set( "foo", new Short( (short)100 ) );
         Short o = (Short)mc.get( "foo" );
 		assert o.shortValue() == 100;
-		log.error( "+ store/retrieve Short type test passed" );
     }
 
     public static void test8() {
         mc.set( "foo", new Long( Long.MAX_VALUE ) );
         Long o = (Long)mc.get( "foo" );
 		assert o.longValue() == Long.MAX_VALUE;
-		log.error( "+ store/retrieve Long type test passed" );
     }
 
     public static void test9() {
         mc.set( "foo", new Double( 1.1 ) );
         Double o = (Double)mc.get( "foo" );
 		assert o.doubleValue() == 1.1;
-		log.error( "+ store/retrieve Double type test passed" );
     }
 
     public static void test10() {
         mc.set( "foo", new Float( 1.1f ) );
         Float o = (Float)mc.get( "foo" );
 		assert o.floatValue() == 1.1f;
-		log.error( "+ store/retrieve Float type test passed" );
     }
 
     public static void test11() {
         mc.set( "foo", new Integer( 100 ), new Date( System.currentTimeMillis() ));
         try { Thread.sleep( 1000 ); } catch ( Exception ex ) { }
         assert mc.get( "foo" ) == null;
-		log.error( "+ store/retrieve w/ expiration test passed" );
     }
 
 	public static void test12() {
@@ -120,7 +101,6 @@ public class UnitTests {
 		long j = mc.decr("foo", (long)2); // foo now == 4
 		assert j == 4;
 		assert j == mc.getCounter( "foo" );
-		log.error( "+ incr/decr test passed" );
 	}
 
 	public static void test13() {
@@ -128,19 +108,16 @@ public class UnitTests {
 		mc.set("foo", d1);
 		Date d2 = (Date) mc.get("foo");
 		assert d1.equals( d2 );
-		log.error( "+ store/retrieve Date type test passed" );
 	}
 
 	public static void test14() {
 		assert !mc.keyExists( "foobar123" );
 		mc.set( "foobar123", new Integer( 100000) );
 		assert mc.keyExists( "foobar123" );
-		log.error( "+ store/retrieve test passed" );
 
 		assert !mc.keyExists( "counterTest123" );
 		mc.storeCounter( "counterTest123", 0 );
 		assert mc.keyExists( "counterTest123" );
-		log.error( "+ counter store test passed" );
 	}
 
 	public static void test15() {
@@ -151,19 +128,16 @@ public class UnitTests {
 		stats = mc.statsSlabs();
 		assert stats != null;
 
-		log.error( "+ stats test passed" );
 	}
 
 	public static void test16() {
         assert !mc.set( "foo", null );
-		log.error( "+ invalid data store [null] test passed" );
 	}
     
 	public static void test17() {
         mc.set( "foo bar", Boolean.TRUE );
         Boolean b = (Boolean)mc.get( "foo bar" );
 		assert b.booleanValue();
-		log.error( "+ store/retrieve Boolean type test passed" );
 	}
     
 	public static void test18() {
@@ -177,8 +151,6 @@ public class UnitTests {
 		long j = mc.decr( "foo", (long)3 ); // foo now == 4
 		assert j == 4;
 		assert j == mc.getCounter( "foo" );
-
-		log.error( "+ incr/decr test passed" );
 	}
 
 	public static void test19() {
@@ -193,11 +165,9 @@ public class UnitTests {
 		for ( int i=0; i<max; i++ ) {
 			assert results.get( keys[i]).equals( "value"+i );
 		}
-		log.error( "+ getMulti test passed" );
 	}
 	
 	public static void test20( int max, int skip, int start ) {
-		log.warn( String.format( "test 20 starting with start=%5d skip=%5d max=%7d", start, skip, max ) );
 		int numEntries = max/skip+1;
 		String[] keys = new String[ numEntries ];
 		byte[][] vals = new byte[ numEntries ][];
@@ -217,14 +187,12 @@ public class UnitTests {
 		for ( int i=0; i<numEntries; i++ )
 			assert Arrays.equals( (byte[])results.get( keys[i]), vals[i] );
 		
-		log.warn( String.format( "test 20 finished with start=%5d skip=%5d max=%7d", start, skip, max ) );
 	}
 
     public static void test21() {
         mc.set( "foo", new StringBuilder( "hello" ) );
         StringBuilder o = (StringBuilder)mc.get( "foo" );
 		assert o.toString().equals( "hello" );
-		log.error( "+ store/retrieve StringBuilder type test passed" );
     }
 
     public static void test22() {
@@ -234,14 +202,12 @@ public class UnitTests {
 
         mc.set( "foo", b );
 		assert Arrays.equals( (byte[])mc.get( "foo" ), b );
-		log.error( "+ store/retrieve byte[] type test passed" );
     }
 
     public static void test23() {
 		TestClass tc = new TestClass( "foo", "bar", new Integer( 32 ) );
         mc.set( "foo", tc );
 		assert tc.equals( (TestClass)mc.get( "foo" ) );
-		log.error( "+ store/retrieve serialized object test passed" );
     }
 
 	public static void test24() {
@@ -260,8 +226,6 @@ public class UnitTests {
 			String val = (String)results.get( key );
 			assert key.equals( val );
 		}
-
-		log.error( "+ getMulti w/ keys that don't exist test passed" );
 	}
 
 	public static void runAlTests( MemcachedClient mc ) {
@@ -327,10 +291,6 @@ public class UnitTests {
 	 * @param args the command line arguments
 	 */
 	public static void main(String[] args) {
-
-		BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel( Level.WARN );
-
 		if ( !UnitTests.class.desiredAssertionStatus() ) {
 			System.err.println( "WARNING: assertions are disabled!" );
 			try { Thread.sleep( 3000 ); } catch ( InterruptedException e ) {}

@@ -15,16 +15,14 @@
  *
  * @author greg whalin <greg@meetup.com> 
  */
-package com.meetup.memcached.test;
+package com.meetup.memcached;
 
 import com.meetup.memcached.*;
-import org.apache.log4j.*;
 
 public class TestMemcached  {  
 	public static void main(String[] args) {
 		      // memcached should be running on port 11211 but NOT on 11212
 
-		BasicConfigurator.configure();
 		String[] servers = { "192.168.1.1:1624", "192.168.1.1:1625" };
 		SockIOPool pool = SockIOPool.getInstance();
 		pool.setServers( servers );
@@ -40,8 +38,6 @@ public class TestMemcached  {
 
 		MemcachedClient mcc = new MemcachedClient();
 
-		// turn off most memcached client logging:
-		com.meetup.memcached.Logger.getLogger( MemcachedClient.class.getName() ).setLevel( com.meetup.memcached.Logger.LEVEL_WARN );
 
 		for ( int i = 0; i < 10; i++ ) {
 			boolean success = mcc.set( "" + i, "Hello!" );

@@ -15,24 +15,15 @@
  *
  * @author Greg Whalin <greg@meetup.com> 
  */
-package com.meetup.memcached.test;
+package com.meetup.memcached;
 
 import com.meetup.memcached.*;
 import java.util.*;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.BasicConfigurator;
 
 public class MemcachedBench {
 
-	// logger
-	private static Logger log =
-		Logger.getLogger( MemcachedBench.class.getName() );
-
 	public static void main(String[] args) {
 
-		BasicConfigurator.configure();
-		org.apache.log4j.Logger.getRootLogger().setLevel( Level.OFF );
 
 		int runs = Integer.parseInt(args[0]);
 		int start = Integer.parseInt(args[1]);

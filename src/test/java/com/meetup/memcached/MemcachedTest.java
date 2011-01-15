@@ -15,7 +15,7 @@
  *
  * @author Greg Whalin <greg@meetup.com> 
  */
-package com.meetup.memcached.test;
+package com.meetup.memcached;
 
 import com.meetup.memcached.*;
 import java.util.*;
